@@ -1,0 +1,12 @@
+[    
+  {
+    "pypi": {
+      "package": "azureml-sdk[databricks]==1.0.45"
+    }
+  },
+  {
+    "pypi": {
+      "package": "click==7.0"
+    }
+  }
+]

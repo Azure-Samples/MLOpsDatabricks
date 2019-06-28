@@ -1,0 +1,55 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  displayName: 'Use Python 3.x'
+
+- bash: |
+   # Install Python packages
+   
+   python -m pip install --upgrade pip 
+   python -m pip install -r requirements.txt
+  displayName: 'Install Packages'
+
+- bash: |
+   #Create Azure Databricks cluster
+   
+   clus_id=$(python3 $(Build.SourcesDirectory)/cluster_config/cluster_manager.py --domain=$(databricks_domain) --token=$(databricks_access_token) --clustername="$(Build.BuildNumber)" --clusterid="$(cluster_id)" 2>&1 >/dev/null) 
+   
+   echo "##vso[task.setvariable variable=existing_databricks_cluster_id]$clus_id"  
+   
+  displayName: 'Initialize Databricks Cluster'
+
+- bash: |
+   # Login to Databricks CLI and create dbfs direcotory for model
+   databricks configure --token << ANSWERS
+   https://centralus.azuredatabricks.net
+   $(databricks_access_token)
+   ANSWERS
+   dbfs mkdirs dbfs:/model
+  displayName: 'Login to ADB CLI and create DBFS model directory'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: # Invoke the Python training pipeline
+      
+      python3 $(Build.SourcesDirectory)/aml_service/pipelines/train_pipeline.py --cluster-id="$(existing_databricks_cluster_id)" --workspace-name="$(aml_workspace_name)" --resource-group="$(azure_resource_group)" --subscription-id="$(azure_subscription_id)" --app-id="$(sp_app_id)" --app-secret="$(sp_app_secret)" --tenant-id="$(azure_tenant_id)" --experiment-folder="$(Build.SourcesDirectory)/aml_service/experiment" --databricks-workspace="$(databricks_workspace_name)" --databricks-access-token="$(databricks_access_token)" --databricks-compute-name="$(databricks_compute_name_aml)" --project-folder="$(Build.SourcesDirectory)" --train-script-path="src/train/train.py" --mdl-dir="$(model_dir)" --mdl-name="AzDO"
+  displayName: 'Train model using AML with Remote Compute'
+
+- bash: |
+   # Clean dbfs model directory
+   dbfs rm dbfs:/model -r
+  displayName: 'Remove DBFS model directory'
+
+- bash: |
+   # Terminate Azure Databricks cluster
+   
+   # python3 $(Build.SourcesDirectory)/cluster_config/cluster_manager.py --domain=$(databricks_domain) --token=$(databricks_access_token) --clusterid=$(existing_databricks_cluster_id) --terminate
+   
+   # echo "Cluster: $(existing_databricks_cluster_id) terminated successfully."   
+  displayName: 'Terminate Databricks Cluster'

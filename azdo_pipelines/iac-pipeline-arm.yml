@@ -1,0 +1,22 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  baseName: $[coalesce(variables['baseNameOverride'], 'mlopsdb')]
+  location: $[coalesce(variables['locationOverride'], 'westus2')]
+
+steps:
+- task: AzureResourceGroupDeployment@2
+  inputs:
+    azureSubscription: 'TE Account - riserrad'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '$(baseName)-AML-RG'
+    location: $(location)
+    templateLocation: 'Linked artifact'
+    csmFile: '$(Build.SourcesDirectory)/iac/arm-templates/cloud-environment.json'
+    overrideParameters: '-baseName $(baseName) -adbPricingTier standard'
+    deploymentMode: 'Incremental'
+  displayName: 'Deploy MLOps resources to Azure'

@@ -1,0 +1,21 @@
+# Conda environment for pytorch
+# https://conda.io/docs/user-guide/tasks/manage-environments.html
+# conda env create -f C:\AI_ML_OPS\Code\environment.yml
+# conda env remove -n pytorch
+# conda activate aml
+# conda activate aml
+
+name: aml
+dependencies:
+- python=3.6
+- numpy
+- pandas
+- requests
+- pylint
+- matplotlib
+- pathlib 
+- click
+- pip:
+  - azureml-core
+  - http://download.pytorch.org/whl/cu90/torch-0.4.1-cp35-cp35m-linux_x86_64.whl
+  - torchvision

@@ -1,57 +1,97 @@
-# Project Name
+# MLOps with Azure DevOps
 
-(short, 1-3 sentenced, description of the project)
+## Preparing the environment
 
-## Features
+### Infrastructure/Cloud Infrastructure
 
-This project framework provides the following features:
+This repository contains the base structure for you to start developing your
+Machine Learning project using:
 
-* Feature 1
-* Feature 2
-* ...
+|Technology|Objective/Reason|
+|----------|----------------|
+|Azure Machine Learning Service|Manage Machine Learning models with the power of Azure|
+|Azure Databricks|Use its compute power as a Remote Compute for training models|
+|Azure Container Instance|Deploy Machine Learning models as Docker containers|
 
-## Getting Started
+To have all the resources set, leverage the following resource to get your
+infrastructure ready:
 
-### Prerequisites
+- [Setting up your cloud infrastructure](docs/setup-cloud-infrastructure.md)
 
-(ideally very short, if any)
+### Azure DevOps
 
-- OS
-- Library version
-- ...
+This project is intended to demonstrate the benefits of adding DevOps practices
+to a Machine Learning development cycle.
 
-### Installation
+This structure already have some resources to help you set up your pipelines
+to accelerate model training and deployment.
 
-(ideally very short)
+- [Setting up the training pipeline](docs/setup-training-pipeline.md)
 
-- npm install [package name]
-- mvn install
-- ...
+## Sample project
 
-### Quickstart
-(Add steps to get up and running quickly)
+This code sample reproduces the **Image Classification**, a *convolutional neural
+network image classification*. For more details of the project structure,
+check the [project structure](docs/project-structure.md) page.
 
-1. git clone [repository clone url]
-2. cd [respository name]
-3. ...
+This project structure was also based on the
+[cookiecutter data science project template](https://drivendata.github.io/cookiecutter-data-science/).
 
+## Project flow
 
-## Demo
+### Starting point/Current state
 
-A demo app is included to show how to use the project.
+A Machine Learning project being developed by a team of Data Engineers/Data
+Analysts, using Python.
 
-To run the demo, follow these steps:
+The team develops the code to train the Machine Learning model and they need
+to orchestrate the way this code gets **tested, trained, packaged
+and deployed**.
 
-(Add steps to start up the demo)
+### Testing
 
-1.
-2.
-3.
+Testing the code that generages a model is crucial to the success and accuracy
+of the model being developed.
 
-## Resources
+The code being developed will produce a Machine Learning model that will help
+people to take decisions, when not being the main responsible for the
+decisions itself.
 
-(Any additional resources or related projects)
+That's why testing the units of the code to make sure it meets the requirements
+is a fundamental piece of the development cycle.
 
-- Link to supporting information
-- Link to similar sample
-- ...
+You will achieve it using the following capabilities:
+
+- Python Unit Testing frameworks
+- Azure DevOps
+
+### Training
+
+This project is all about generating a Machine Learning model, which needs
+to be trained. Training a model requires compute power and orchestration.
+
+Compute power is commonly an expensive asset and that's why this project
+leverages cloud workloads to optimize resource consumption and avoiding upfront
+costs.
+
+To enable this, the following capabilities will be used:
+
+- Machine Learning Python SDKs
+- Azure Databricks
+- Azure DevOps
+
+### Deploying
+
+The resulting model from the training step needs to be deployed somewhere
+so the edge can consume it. There are a few ways to achieve it and,
+for this scenario, you will deploy this model as part of a Docker Container.
+
+A container has the power of having all the dependencies the application needs
+to run encapsulated within it. It is also easily portable to multiple different
+platforms.
+
+To take advantage of deploying the model to a container, you will use:
+
+- Azure DevOps
+- Azure Container Instances
+- Azure Machine Learning Service
