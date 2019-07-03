@@ -1,5 +1,10 @@
 trigger:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - iac/arm-templates/*
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -7,11 +12,12 @@ pool:
 variables:
   baseName: $[coalesce(variables['baseNameOverride'], 'mlopsdb')]
   location: $[coalesce(variables['locationOverride'], 'westus2')]
+  azuresub: $[coalesce(variables['azuresubOverride'], 'davete02_sub')]
 
 steps:
 - task: AzureResourceGroupDeployment@2
   inputs:
-    azureSubscription: 'TE Account - riserrad'
+    azureSubscription: $(azuresub)
     action: 'Create Or Update Resource Group'
     resourceGroupName: '$(baseName)-AML-RG'
     location: $(location)
