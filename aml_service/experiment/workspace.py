@@ -23,30 +23,32 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THE SOFTWARE CODE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
+import sys
 from azureml.core import Workspace
 from azureml.core.authentication import ServicePrincipalAuthentication
 
 
 def get_workspace(
         name: str,
-        resourceGroup: str,
-        subscriptionId: str,
-        tenantId: str,
-        appId: str,
-        appSecret: str):
-    servicePrincipal = ServicePrincipalAuthentication(
-        tenant_id=tenantId,
-        service_principal_id=appId,
-        service_principal_password=appSecret)
+        resource_group: str,
+        subscription_id: str,
+        tenant_id: str,
+        app_id: str,
+        app_secret: str):
+    service_principal = ServicePrincipalAuthentication(
+        tenant_id=tenant_id,
+        service_principal_id=app_id,
+        service_principal_password=app_secret)
 
     try:
-        ws = Workspace.get(
+        aml_workspace = Workspace.get(
             name=name,
-            subscription_id=subscriptionId,
-            resource_group=resourceGroup,
-            auth=servicePrincipal)
+            subscription_id=subscription_id,
+            resource_group=resource_group,
+            auth=service_principal)
 
-        return ws
-    except Exception:
+        return aml_workspace
+    except Exception as caught_exception:
         print("Error while retrieving Workspace...")
-        traceback.print_exc()
+        print(str(caught_exception))
+        sys.exit(1)

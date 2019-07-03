@@ -1,9 +1,9 @@
+import argparse
 import torch
 import torch.nn as nn
+from torch.autograd import Variable
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
-from torch.autograd import Variable
-import argparse
 
 
 class CNN(nn.Module):
@@ -19,7 +19,7 @@ class CNN(nn.Module):
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d(2))
-        self.fc = nn.Linear(7*7*32, 10)
+        self.fc = nn.Linear(7 * 7 * 32, 10)
 
     def forward(self, x):
         out = self.layer1(x)
@@ -29,23 +29,23 @@ class CNN(nn.Module):
         return out
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--AZUREML_RUN_TOKEN')
-parser.add_argument('--AZUREML_RUN_ID')
-parser.add_argument('--AZUREML_ARM_SUBSCRIPTION')
-parser.add_argument('--AZUREML_ARM_RESOURCEGROUP')
-parser.add_argument('--AZUREML_ARM_WORKSPACE_NAME')
-parser.add_argument('--AZUREML_ARM_PROJECT_NAME')
-parser.add_argument('--AZUREML_SCRIPT_DIRECTORY_NAME')
-parser.add_argument('--AZUREML_RUN_TOKEN_EXPIRY')
-parser.add_argument('--AZUREML_SERVICE_ENDPOINT')
-parser.add_argument('--MODEL_PATH')
-args = parser.parse_args()
+PARSER = argparse.ArgumentParser()
+PARSER.add_argument('--AZUREML_RUN_TOKEN')
+PARSER.add_argument('--AZUREML_RUN_ID')
+PARSER.add_argument('--AZUREML_ARM_SUBSCRIPTION')
+PARSER.add_argument('--AZUREML_ARM_RESOURCEGROUP')
+PARSER.add_argument('--AZUREML_ARM_WORKSPACE_NAME')
+PARSER.add_argument('--AZUREML_ARM_PROJECT_NAME')
+PARSER.add_argument('--AZUREML_SCRIPT_DIRECTORY_NAME')
+PARSER.add_argument('--AZUREML_RUN_TOKEN_EXPIRY')
+PARSER.add_argument('--AZUREML_SERVICE_ENDPOINT')
+PARSER.add_argument('--MODEL_PATH')
+ARGS = PARSER.parse_args()
 
-num_epochs = 5
-batch_size = 100
-learning_rate = 0.001
-train_loader = torch.utils.data.DataLoader(
+NUM_EPOCHS = 5
+BATCH_SIZE = 100
+LEARNING_RATE = 0.001
+TRAIN_LOADER = torch.utils.data.DataLoader(
     dsets.FashionMNIST(
         root='../image-learn/data/fashion',
         train=True,
@@ -64,35 +64,35 @@ train_loader = torch.utils.data.DataLoader(
     shuffle=True
 )
 
-cnn = CNN()
+CNN_INSTANCE = CNN()
 
-criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(cnn.parameters(), lr=learning_rate)
-losses = []
-for epoch in range(num_epochs):
-    for i, (images, labels) in enumerate(train_loader):
+CRITERION = nn.CrossEntropyLoss()
+OPTIMIZER = torch.optim.Adam(CNN_INSTANCE.parameters(), lr=LEARNING_RATE)
+LOSSES = []
+for epoch in range(NUM_EPOCHS):
+    for i, (images, labels) in enumerate(TRAIN_LOADER):
         images = Variable(images.float())
         labels = Variable(labels)
 
         # Forward + Backward + Optimize
-        optimizer.zero_grad()
-        outputs = cnn(images)
-        loss = criterion(outputs, labels)
+        OPTIMIZER.zero_grad()
+        outputs = CNN_INSTANCE(images)
+        loss = CRITERION(outputs, labels)
         loss.backward()
-        optimizer.step()
+        OPTIMIZER.step()
 
-        losses.append(loss.data[0])
+        LOSSES.append(loss.data[0])
 
-        if (i+1) % 100 == 0:
+        if (i + 1) % 100 == 0:
             print(
                 'Epoch : %d/%d, Iter : %d/%d,  Loss: %.4f'
                 % (
-                    epoch+1,
-                    num_epochs,
-                    i+1,
-                    len(train_loader)//batch_size,
+                    epoch + 1,
+                    NUM_EPOCHS,
+                    i + 1,
+                    len(TRAIN_LOADER) // BATCH_SIZE,
                     loss.data[0]
                 )
             )
 
-torch.save(cnn.state_dict(), args.MODEL_PATH)
+torch.save(CNN_INSTANCE.state_dict(), ARGS.MODEL_PATH)

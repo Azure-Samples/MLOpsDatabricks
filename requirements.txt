@@ -2,7 +2,6 @@
 -e .
 
 # external requirements
-click>=7.0
 requests>=2.22 #.0
 azureml>=0.2 #.7
 azureml-core>=1.0 #.45

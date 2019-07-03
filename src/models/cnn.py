@@ -1,6 +1,5 @@
-
-import torch 
 import torch.nn as nn
+
 
 class CNN(nn.Module):
     def __init__(self):
@@ -15,7 +14,7 @@ class CNN(nn.Module):
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d(2))
-        self.fc = nn.Linear(7*7*32, 10)
+        self.fc = nn.Linear(7 * 7 * 32, 10)
 
     def forward(self, x):
         out = self.layer1(x)
@@ -23,4 +22,3 @@ class CNN(nn.Module):
         out = out.view(out.size(0), -1)
         out = self.fc(out)
         return out
-    
