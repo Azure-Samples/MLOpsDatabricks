@@ -13,6 +13,7 @@ steps:
    
    python -m pip install --upgrade pip 
    python -m pip install -r requirements.txt
+  failOnStderr: 'true'
   displayName: 'Install Packages'
 
 - script: |
@@ -30,38 +31,48 @@ steps:
 - bash: |
    #Create Azure Databricks cluster
    
-   clus_id=$(python3 $(Build.SourcesDirectory)/cluster_config/cluster_manager.py --domain $(databricks_domain) --token $(databricks_access_token) --clustername "$(Build.BuildNumber)" --clusterid "$(cluster_id)" 2>&1 >/dev/null) 
+   DATABRICKS_CLUSTER_ID=$(python3 $(Build.SourcesDirectory)/cluster_config/cluster_manager.py 2>&1 >/dev/null) 
    
-   echo "##vso[task.setvariable variable=existing_databricks_cluster_id]$clus_id"  
-   
+   echo "##vso[task.setvariable variable=existing_databricks_cluster_id]$DATABRICKS_CLUSTER_ID"  
+  env:
+    DATABRICKS_ACCESS_TOKEN: $(DATABRICKS_ACCESS_TOKEN)
+  failOnStderr: 'true'
   displayName: 'Initialize Databricks Cluster'
 
 - bash: |
    # Login to Databricks CLI and create dbfs direcotory for model
    databricks configure --token << ANSWERS
-   https://$(databricks_domain)
-   $(databricks_access_token)
+   https://$(DATABRICKS_DOMAIN)
+   $(DATABRICKS_ACCESS_TOKEN)
    ANSWERS
    dbfs mkdirs dbfs:/model
+  failOnStderr: 'true'
   displayName: 'Login to ADB CLI and create DBFS model directory'
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: # Invoke the Python training pipeline
+- bash: |
+   # Invoke the Python training pipeline
       
-      python3 $(Build.SourcesDirectory)/aml_service/pipelines/train_pipeline.py --cluster-id "$(existing_databricks_cluster_id)" --workspace-name "$(aml_workspace_name)" --resource-group "$(azure_resource_group)" --subscription-id "$(azure_subscription_id)" --app-id "$(sp_app_id)" --app-secret "$(sp_app_secret)" --tenant-id "$(azure_tenant_id)" --experiment-folder "$(Build.SourcesDirectory)/aml_service/experiment" --databricks-workspace "$(databricks_workspace_name)" --databricks-access-token "$(databricks_access_token)" --databricks-compute-name "$(databricks_compute_name_aml)" --project-folder "$(Build.SourcesDirectory)" --train-script-path "src/train/train.py" --model-dir "$(model_dir)" --model-name "$(model_name)"
+   python3 $(Build.SourcesDirectory)/aml_service/pipelines/train_pipeline.py
+  failOnStderr: 'false'
+  env:
+    SOURCES_DIR: '$(Build.SourcesDirectory)'
+    SP_APP_SECRET: '$(SP_APP_SECRET)'
+    DATABRICKS_ACCESS_TOKEN: '$(DATABRICKS_ACCESS_TOKEN)'
   displayName: 'Train model using AML with Remote Compute'
+  enabled: 'true'
 
 - bash: |
    # Clean dbfs model directory
    dbfs rm dbfs:/model -r
+  failOnStderr: 'true'
   displayName: 'Remove DBFS model directory'
 
 - bash: |
    # Terminate Azure Databricks cluster
    
-   # python3 $(Build.SourcesDirectory)/cluster_config/cluster_manager.py --domain=$(databricks_domain) --token=$(databricks_access_token) --clusterid=$(existing_databricks_cluster_id) --terminate
+   python3 $(Build.SourcesDirectory)/cluster_config/cluster_manager.py --terminate
    
-   # echo "Cluster: $(existing_databricks_cluster_id) terminated successfully."   
+   echo "Cluster: $(existing_databricks_cluster_id) terminated successfully."
+  failOnStderr: 'true'
   displayName: 'Terminate Databricks Cluster'
+  enabled: 'false'

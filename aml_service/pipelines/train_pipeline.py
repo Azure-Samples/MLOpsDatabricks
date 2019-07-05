@@ -1,7 +1,6 @@
 import sys
 import os
 import time
-import argparse
 
 from azureml.pipeline.core import Pipeline
 from azureml.pipeline.steps import DatabricksStep
@@ -32,99 +31,61 @@ def get_experiment_run_url(
 
 
 def main():
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument(
-        '--cluster-id',
-        required=True,
-        help='Databricks Cluster id')
-    arg_parser.add_argument(
-        '--workspace-name',
-        required=True,
-        help='Azure ML Service Workspace name')
-    arg_parser.add_argument(
-        '--resource-group',
-        required=True,
-        help='Resource Group containing the existing Databricks Workspace')
-    arg_parser.add_argument(
-        '--subscription-id',
-        required=True,
-        help='ID of the Azure Subscription')
-    arg_parser.add_argument(
-        '--tenant-id',
-        required=True,
-        help='Azure Tenant ID')
-    arg_parser.add_argument(
-        '--app-id',
-        required=True,
-        help='Service Principal Application ID')
-    arg_parser.add_argument(
-        '--app-secret',
-        required=True,
-        help='Service Principal Application Secret (password)')
-    arg_parser.add_argument(
-        '--experiment-folder',
-        required=True,
-        help='Folder that stores the experiment files')
-    arg_parser.add_argument(
-        '--project-folder',
-        required=True,
-        help='Root folder for the whole project')
-    arg_parser.add_argument(
-        '--train-script-path',
-        required=True,
-        help='Train script path, relative to --project-folder')
-    arg_parser.add_argument(
-        '--databricks-workspace',
-        required=True,
-        help='Databricks Workspace name')
-    arg_parser.add_argument(
-        '--databricks-access-token',
-        required=True,
-        help='Databricks Access Token')
-    arg_parser.add_argument(
-        '--databricks-compute-name',
-        required=True,
-        help='Databricks Compute Name (at AML WS)')
-    arg_parser.add_argument(
-        '--model-dir',
-        required=True,
-        help='The Model Path')
-    arg_parser.add_argument(
-        '--model-name',
-        required=True,
-        help='The Model Name')
+    cluster_id = os.environ.get("DATABRICKS_CLUSTER_ID", None)
+    workspace_name = os.environ.get("AML_WORKSPACE_NAME", None)
+    resource_group = os.environ.get("RESOURCE_GROUP", None)
+    subscription_id = os.environ.get("SUBSCRIPTION_ID", None)
+    tenant_id = os.environ.get("TENANT_ID", None)
+    app_id = os.environ.get("SP_APP_ID", None)
+    app_secret = os.environ.get("SP_APP_SECRET", None)
+    experiment_subfolder = os.environ.get(
+        "EXPERIMENT_FOLDER",
+        'aml_service/experiment'
+    )
+    sources_directory = os.environ.get("SOURCES_DIR", None)
+    experiment_folder = os.path.join(sources_directory, experiment_subfolder)
+    train_script_path = os.environ.get("TRAIN_SCRIPT_PATH", None)
+    databricks_workspace_name = os.environ.get(
+        "DATABRICKS_WORKSPACE_NAME",
+        None
+    )
+    databricks_access_token = os.environ.get("DATABRICKS_ACCESS_TOKEN", None)
+    databricks_compute_name_aml = os.environ.get(
+        "DATABRICKS_COMPUTE_NAME_AML",
+        None
+    )
+    model_dir = os.environ.get("MODEL_DIR", '/dbfs/model')
+    model_name = os.environ.get("MODEL_NAME", 'local-model')
 
-    main_arguments = arg_parser.parse_args()
-
-    model_file_name = "%s.pth" % (main_arguments.model_name)
-    model_path = os.path.join(main_arguments.model_dir, model_file_name)
+    model_file_name = "%s.pth" % (model_name)
+    model_path = os.path.join(model_dir, model_file_name)
 
     print("The model path will be %s" % (model_path))
 
     aml_workspace = get_workspace(
-        main_arguments.workspace_name,
-        main_arguments.resource_group,
-        main_arguments.subscription_id,
-        main_arguments.tenant_id,
-        main_arguments.app_id,
-        main_arguments.app_secret)
+        workspace_name,
+        resource_group,
+        subscription_id,
+        tenant_id,
+        app_id,
+        app_secret)
     print(aml_workspace)
 
     databricks_compute = get_compute(
         aml_workspace,
-        main_arguments.databricks_compute_name,
-        main_arguments.resource_group,
-        main_arguments.databricks_workspace,
-        main_arguments.databricks_access_token)
+        databricks_compute_name_aml,
+        resource_group,
+        databricks_workspace_name,
+        databricks_access_token)
     print(databricks_compute)
 
     step1 = DatabricksStep(
         name="DBPythonInLocalMachine",
         num_workers=1,
-        python_script_name=main_arguments.train_script_path,
-        source_directory=main_arguments.project_folder,
+        python_script_name=train_script_path,
+        source_directory=sources_directory,
         run_name='DB_Python_Local_demo',
-        existing_cluster_id=main_arguments.cluster_id,
+        existing_cluster_id=cluster_id,
         compute_target=databricks_compute,
         allow_reuse=False,
         python_script_params=['--MODEL_PATH', model_path]
@@ -134,17 +95,17 @@ def main():
         name="RegisterModel",
         num_workers=1,
         python_script_name="register_model.py",
-        source_directory=main_arguments.experiment_folder,
+        source_directory=experiment_folder,
         run_name='Register_model',
-        existing_cluster_id=main_arguments.cluster_id,
+        existing_cluster_id=cluster_id,
         compute_target=databricks_compute,
         allow_reuse=False,
         python_script_params=[
             '--MODEL_PATH', model_path,
-            '--TENANT_ID', main_arguments.tenant_id,
-            '--APP_ID', main_arguments.app_id,
-            '--APP_SECRET', main_arguments.app_secret,
-            '--MODEL_NAME', main_arguments.model_name]
+            '--TENANT_ID', tenant_id,
+            '--APP_ID', app_id,
+            '--APP_SECRET', app_secret,
+            '--MODEL_NAME', model_name]
     )
 
     step2.run_after(step1)
@@ -168,9 +129,9 @@ def main():
     pipeline_run_id = pipeline_details['runId']
 
     azure_run_url = get_experiment_run_url(
-        main_arguments.subscription_id,
-        main_arguments.resource_group,
-        main_arguments.workspace_name,
+        subscription_id,
+        resource_group,
+        workspace_name,
         pipeline_run_id
     )
 
@@ -180,11 +141,14 @@ def main():
 
     timer_mod = 0
 
-    while pipeline_status == 'Running':
+    while pipeline_status == 'Running' or pipeline_status == 'NotStarted':
         timer_mod = timer_mod + 10
         time.sleep(10)
         if (timer_mod % 30) == 0:
-            print("Still running. %s seconds have passed." % (timer_mod))
+            print(
+                "Status: %s. %s seconds have passed." %
+                (pipeline_status, timer_mod)
+            )
         pipeline_status = pipeline_run.get_status()
 
     if pipeline_status == 'Failed':

@@ -37,6 +37,18 @@ check the [project structure](docs/project-structure.md) page.
 This project structure was also based on the
 [cookiecutter data science project template](https://drivendata.github.io/cookiecutter-data-science/).
 
+### Running this project on your local development environment
+
+This sample provides you two options to have your environment set up for developing
+and debugging locally. The focus of these docs is on how to have all the
+required environment variables set so you can invoke
+and debug this code on your machine.
+
+* See [this page](docs/vscode-launch-json.md) for details on how to debug
+using **Visual Studio Code**
+* See [this page](docs/bash-environment-variables.md) for looking into details on how
+to have the enrironment variables set using **Bash**
+
 ## Project flow
 
 ### Starting point/Current state
