@@ -1,5 +1,20 @@
 # MLOps with Azure DevOps
 
+This sample shows you how to operationalize your Machine Learning development
+cycle with **Azure Machine Learning Service** and **Azure Databricks** - as a
+compute target - by **leveraging Azure DevOps Pipelines** as
+the orchestrator for the whole flow.
+
+By running this project, you will have the opportunity to work with Azure
+workloads, such as:
+
+|Technology|Objective/Reason|
+|----------|----------------|
+|Azure DevOps|The platform to help you implement DevOps practices on your scenario|
+|Azure Machine Learning Service|Manage Machine Learning models with the power of Azure|
+|Azure Databricks|Use its compute power as a Remote Compute for training models|
+|Azure Container Instance|Deploy Machine Learning models as Docker containers|
+
 ## Preparing the environment
 
 ### Infrastructure/Cloud Infrastructure
@@ -7,11 +22,9 @@
 This repository contains the base structure for you to start developing your
 Machine Learning project using:
 
-|Technology|Objective/Reason|
-|----------|----------------|
-|Azure Machine Learning Service|Manage Machine Learning models with the power of Azure|
-|Azure Databricks|Use its compute power as a Remote Compute for training models|
-|Azure Container Instance|Deploy Machine Learning models as Docker containers|
+* Azure Machine Learning Service
+* Azure Databricks
+* Azure Container Instance
 
 To have all the resources set, leverage the following resource to get your
 infrastructure ready:
@@ -20,11 +33,15 @@ infrastructure ready:
 
 ### Azure DevOps
 
-This project is intended to demonstrate the benefits of adding DevOps practices
-to a Machine Learning development cycle.
+After you have your infrastructure set, it's time to have your Azure DevOps
+connected to it to start orchestrating your Machine Learning pipeline.
 
-This structure already have some resources to help you set up your pipelines
-to accelerate model training and deployment.
+> If you don't have an Azure DevOps account, please refer to
+> [this doc](https://docs.microsoft.com/en-us/azure/devops/user-guide/sign-up-invite-teammates?view=azure-devops)
+> to have it set up.
+
+You will find resources and docs to have Azure DevOps orchestrating your
+pipeline by following this guidance:
 
 - [Setting up the training pipeline](docs/setup-training-pipeline.md)
 

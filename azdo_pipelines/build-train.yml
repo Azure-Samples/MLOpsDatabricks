@@ -4,6 +4,13 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  SOURCES_DIR: $[coalesce(variables['SOURCES_DIR_OVERRIDE'], '$(Build.SourcesDirectory)')]
+  TRAIN_SCRIPT_PATH: $[coalesce(variables['TRAIN_SCRIPT_PATH_OVERRIDE'], 'src/train/train.py')]
+  MODEL_DIR: $[coalesce(variables['MODEL_DIR_OVERRIDE'], '/dbfs/model')]
+  MODEL_NAME: $[coalesce(variables['MODEL_NAME_OVERRIDE'], 'MLOps-model')]
+  DATABRICKS_COMPUTE_NAME_AML: $[coalesce(variables['DATABRICKS_COMPUTE_NAME_AML_OVERRIDE'], 'ADB-Compute')]
+
 steps:
 - task: UsePythonVersion@0
   displayName: 'Use Python 3.x'

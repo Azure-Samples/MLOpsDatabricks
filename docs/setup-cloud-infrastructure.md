@@ -76,11 +76,17 @@ pipeline YAML file:
 
 - Click Continue
 - You will be able to see the YAML code that defines the pipeline.
-Make sure to update the following values:
+Please note the following variables:
   - `baseName`: this will be used as a prefix for naming all the created
   resources. It is recommended to change to something unique to your contex.
-  - `azureSubscription`: use the name you gave to your Azure Resource Manager
+  - `location`: the location to deploy all the resources.
+  - `azuresub`: use the name you gave to your Azure Resource Manager
   connection on [step 2](#02---Set-up-the-integration-between-Azure-DevOps-and-Azure).
+
+> If you want, you can override these values later. To do that,
+> create these variables at the designer, but giving the `override` suffix
+> to it. If there's a variable designer, this will override the variable
+> value defined on the YAML file.
 
 ![YAML code](images/iac/04-pipeline-review.png)
 

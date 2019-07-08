@@ -104,7 +104,6 @@ To know more about debugging in Visual Studio Code, visit
                 "DATABRICKS_DOMAIN": "",
                 "DATABRICKS_ACCESS_TOKEN": "",
                 "DATABRICKS_CLUSTER_ID": "",
-                "DATABRICKS_CLUSTER_NAME_SUFFIX": "mySuffix",
                 "AML_WORKSPACE_NAME": "MLOpsOSS-AML-WS",
                 "RESOURCE_GROUP": "MLOpsOSS-AML-RG",
                 "SUBSCRIPTION_ID": "",

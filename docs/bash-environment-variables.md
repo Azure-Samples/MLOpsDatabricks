@@ -34,6 +34,28 @@ if you prefer to use one instead of creating a new Cluster every run
 To get the details about all the environment variables used on this sample,
 check [Project environment variables](project-environment-variables.md).
 
+## Running the script
+
+On your shell terminal, navigate to the root folder of this repo and
+run the following command:
+
+```bash
+source ./set-environment-vars.sh
+```
+
+To make sure the script worked, you can try printing out the values of
+any variable that had the value set, for example:
+
+```bash
+echo $DATABRICKS_CLUSTER_NAME_SUFFIX
+```
+
+Should print:
+
+```bash
+my-env
+```
+
 ## Read more
 
 * [Generate a token - Azure Databricks](https://docs.azuredatabricks.net/api/latest/authentication.html#generate-a-token)
