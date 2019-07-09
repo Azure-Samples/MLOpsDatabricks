@@ -1,5 +1,7 @@
 # MLOps with Azure DevOps
 
+[![Build Status](https://dev.azure.com/aidemos/MLOps/_apis/build/status/Azure-Samples.MLOpsDatabricks.BuildTrain?branchName=master)](https://dev.azure.com/aidemos/MLOps/_build/latest?definitionId=101&branchName=master)
+
 This sample shows you how to operationalize your Machine Learning development
 cycle with **Azure Machine Learning Service** and **Azure Databricks** - as a
 compute target - by **leveraging Azure DevOps Pipelines** as
