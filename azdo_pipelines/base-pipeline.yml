@@ -1,0 +1,23 @@
+parameters:
+  requirementsPath: 'requirements.txt'
+
+steps:
+- task: UsePythonVersion@0
+  displayName: 'Use Python 3.x'
+
+- bash: |
+   python -m pip install --upgrade pip 
+   python -m pip install -r ${{ parameters.requirementsPath }}
+  displayName: 'Install Packages'
+
+- script: |
+   pip install flake8
+   pip install flake8_formatter_junit_xml
+   flake8 --format junit-xml --output-file $(Build.BinariesDirectory)/flake8_report.xml --ignore=E111,E402
+  displayName: 'Check code quality'
+  
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFiles: '$(Build.BinariesDirectory)/*_report.xml'
+    testRunTitle: 'Publish test results'

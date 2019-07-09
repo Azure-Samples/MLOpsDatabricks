@@ -100,6 +100,15 @@ read those as environment variables.
   > and consume the values from the pipeline. Refer to
   > [this documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml#link-secrets-from-an-azure-key-vault)
   > if you want to implement it.
+  
+  > **Tip**
+  > 
+  > _Unlike a normal variable, they are not automatically decrypted into
+  > environment variables for scripts. You can explicitly map them in, though._
+  > 
+  > This mapping is already done on the `build-train.yml` file for this sample.
+  > Although it's worth mentioning for learning purposes.
+  > You can read more [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=classic%2Cbatch#secret-variables).
 
 There are other 5 variables that are already set with values at the YAML file:
 
@@ -193,5 +202,4 @@ For more information about `coalesce`, refer to
 
   * [Azure DevOps pipelines - Secret variables](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=classic%2Cbatch#secret-variables)
   * [Azure DevOps pipelines - Link secrets from Azure Key Vault](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml#link-secrets-from-an-azure-key-vault)
-  176A66F3-9456-4295-B53B-FD8562B90349
   * [coalesce expression - Azure Devops Pipelines Expressions](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops#coalesce)

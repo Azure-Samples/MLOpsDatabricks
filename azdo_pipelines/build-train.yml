@@ -12,28 +12,9 @@ variables:
   DATABRICKS_COMPUTE_NAME_AML: $[coalesce(variables['DATABRICKS_COMPUTE_NAME_AML_OVERRIDE'], 'ADB-Compute')]
 
 steps:
-- task: UsePythonVersion@0
-  displayName: 'Use Python 3.x'
-
-- bash: |
-   # Install Python packages
-   
-   python -m pip install --upgrade pip 
-   python -m pip install -r requirements.txt
-  failOnStderr: 'true'
-  displayName: 'Install Packages'
-
-- script: |
-   pip install flake8
-   pip install flake8_formatter_junit_xml
-   flake8 --format junit-xml --output-file $(Build.BinariesDirectory)/flake8_report.xml --ignore=E111,E402
-  displayName: 'Check code quality'
-  
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testResultsFiles: '$(Build.BinariesDirectory)/*_report.xml'
-    testRunTitle: 'Publish test results'
+- template: base-pipeline.yml
+  parameters:
+    requirementsPath: 'requirements.txt'
 
 - bash: |
    #Create Azure Databricks cluster
