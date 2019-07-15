@@ -1,9 +1,8 @@
-
 import json
 import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
-from azureml.core.model import Model
+from azorean.core.model import Model
 from PIL import Image
 
 
@@ -33,7 +32,7 @@ class CNN(nn.Module):
 def init():
     global model
     model = CNN()
-    model_path = Model.get_model_path(model_name="cnn")
+    model_path = Model.get_model_path(model_name="torchcnn")
     model.load_state_dict(torch.load(model_path))
     model.eval()
 
@@ -45,23 +44,11 @@ def run(raw_data):
             (0.1307,), (0.3081,))
     ])
     img = Image.frombytes(
-        '1',
-        (28, 28),
-        (json.loads(raw_data)['data']).encode()
-    )
+        '1', (28, 28), (json.loads(raw_data)['data']).encode())
     input_data = transform(img)
     input_data = input_data.unsqueeze(0)
-    classes = [
-        'tshirt',
-        'Trouser',
-        'Pullover',
-        'Dress',
-        'Coat',
-        'Sandal',
-        'Shirt',
-        'Sneaker',
-        'Bag',
-        'Ankle boot']
+    classes = ['tshirt', 'Trouser', 'Pullover', 'Dress', 'Coat',
+               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
     output = model(input_data)
     index = torch.argmax(output, 1)
     return classes[index]

@@ -126,3 +126,5 @@ To take advantage of deploying the model to a container, you will use:
 - Azure DevOps
 - Azure Container Instances
 - Azure Machine Learning Service
+
+See [this page](docs/release-pipeline.md) for details on setting release pipeline to deploy model 
