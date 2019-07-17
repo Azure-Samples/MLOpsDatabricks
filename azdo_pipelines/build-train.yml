@@ -7,8 +7,8 @@ pool:
 variables:
   SOURCES_DIR: $[coalesce(variables['SOURCES_DIR_OVERRIDE'], '$(Build.SourcesDirectory)')]
   TRAIN_SCRIPT_PATH: $[coalesce(variables['TRAIN_SCRIPT_PATH_OVERRIDE'], 'src/train/train.py')]
-  MODEL_DIR: $[coalesce(variables['MODEL_DIR_OVERRIDE'], '/dbfs/model')]
-  MODEL_NAME: $[coalesce(variables['MODEL_NAME_OVERRIDE'], 'MLOps-model')]
+  MODEL_DIR: $[coalesce(variables['MODEL_DIR_OVERRIDE'], 'dbfs:/model')]
+  MODEL_NAME: $[coalesce(variables['MODEL_NAME_OVERRIDE'], 'torchcnn')]
   DATABRICKS_COMPUTE_NAME_AML: $[coalesce(variables['DATABRICKS_COMPUTE_NAME_AML_OVERRIDE'], 'ADB-Compute')]
 
 steps:
@@ -33,7 +33,7 @@ steps:
    https://$(DATABRICKS_DOMAIN)
    $(DATABRICKS_ACCESS_TOKEN)
    ANSWERS
-   dbfs mkdirs dbfs:/model
+   dbfs mkdirs $(MODEL_DIR)
   failOnStderr: 'true'
   displayName: 'Login to ADB CLI and create DBFS model directory'
 
@@ -51,7 +51,7 @@ steps:
 
 - bash: |
    # Clean dbfs model directory
-   dbfs rm dbfs:/model -r
+   dbfs rm $(MODEL_DIR) -r
   failOnStderr: 'true'
   displayName: 'Remove DBFS model directory'
 

@@ -52,11 +52,11 @@ def main():
         "DATABRICKS_COMPUTE_NAME_AML",
         None
     )
-    model_dir = os.environ.get("MODEL_DIR", '/dbfs/model')
-    model_name = os.environ.get("MODEL_NAME", 'local-model')
+    model_dir = os.environ.get("MODEL_DIR", 'dbfs:/model')
+    model_name = os.environ.get("MODEL_NAME", 'torchcnn')
 
-    model_file_name = "%s.pth" % (model_name)
-    model_path = os.path.join(model_dir, model_file_name)
+    path_components = model_dir.split("/", 1)
+    model_path = "/dbfs/" + path_components[1] + "/" + model_name + ".pth"
 
     print("The model path will be %s" % (model_path))
 
