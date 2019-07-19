@@ -5,7 +5,7 @@ autoScaler:
     maxReplicas: 3
     refreshPeriodInSeconds: 10
     targetUtilization: 70
-authEnabled: True
+authEnabled: False
 containerResourceRequirements:
     cpu: 1
     memoryInGB: 2
@@ -13,4 +13,4 @@ appInsightsEnabled: False
 scoringTimeoutMs: 5000
 maxConcurrentRequestsPerContainer: 2
 maxQueueWaitMs: 5000
-sslEnabled: True
+sslEnabled: False
