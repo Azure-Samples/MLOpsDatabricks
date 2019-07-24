@@ -1,11 +1,11 @@
-from attach_compute import get_compute
-from workspace import get_workspace
 import sys
 import os
 import time
 from azureml.pipeline.core import Pipeline
 from azureml.pipeline.steps import DatabricksStep
 sys.path.append(os.path.abspath("./aml_service/experiment"))
+from attach_compute import get_compute
+from workspace import get_workspace
 
 
 def get_experiment_run_url(
@@ -30,6 +30,11 @@ def get_experiment_run_url(
 
 def main():
     cluster_id = os.environ.get("DATABRICKS_CLUSTER_ID", None)
+
+    # If databricks_cluster_id is not None, but it's an empty string: its None
+    if cluster_id is not None and not cluster_id:
+        cluster_id = None
+
     workspace_name = os.environ.get("AML_WORKSPACE_NAME", None)
     resource_group = os.environ.get("RESOURCE_GROUP", None)
     subscription_id = os.environ.get("SUBSCRIPTION_ID", None)

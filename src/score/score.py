@@ -2,7 +2,7 @@ import json
 import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
-from azorean.core.model import Model
+from azureml.core.model import Model
 from PIL import Image
 
 

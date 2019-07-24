@@ -58,7 +58,7 @@ def provision_cluster(
     databricks_cluster_vmtype
 ):
     try:
-        if cluster.id is None:
+        if cluster.id is None or not cluster.id:
             if databricks_cluster_vmtype is not None:
                 cluster.create(
                     databricks_access_token,
@@ -139,7 +139,12 @@ def main():
         "DATABRICKS_CLUSTER_VMTYPE",
         "Standard_D3_v2"
     )
+
     databricks_cluster_id = os.environ.get("DATABRICKS_CLUSTER_ID", None)
+
+    # If databricks_cluster_id is not None, but it's an empty string: its None
+    if databricks_cluster_id is not None and not databricks_cluster_id:
+        databricks_cluster_id = None
 
     databricks_cluster_name_suffix = get_cluster_name()
 
@@ -167,7 +172,7 @@ def main():
             args.permanent
         )
 
-    sys.stdout.write(cluster.id)
+    sys.exit(cluster.id)
 
 
 if __name__ == '__main__':

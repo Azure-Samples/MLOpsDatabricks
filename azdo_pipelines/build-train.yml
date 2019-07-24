@@ -19,9 +19,9 @@ steps:
 - bash: |
    #Create Azure Databricks cluster
    
-   DATABRICKS_CLUSTER_ID=$(python3 $(Build.SourcesDirectory)/cluster_config/cluster_manager.py 2>&1 >/dev/null) 
+   LOCAL_DATABRICKS_CLUSTER_ID=$(python3 $(Build.SourcesDirectory)/cluster_config/cluster_manager.py 2>&1 >/dev/null) 
    
-   echo "##vso[task.setvariable variable=existing_databricks_cluster_id]$DATABRICKS_CLUSTER_ID"  
+   echo "##vso[task.setvariable variable=databricks_cluster_id]$LOCAL_DATABRICKS_CLUSTER_ID"  
   env:
     DATABRICKS_ACCESS_TOKEN: $(DATABRICKS_ACCESS_TOKEN)
   failOnStderr: 'true'
@@ -60,7 +60,7 @@ steps:
    
    python3 $(Build.SourcesDirectory)/cluster_config/cluster_manager.py --terminate
    
-   echo "Cluster: $(existing_databricks_cluster_id) terminated successfully."
+   echo "Cluster: $(databricks_cluster_id) terminated successfully."
   failOnStderr: 'true'
   displayName: 'Terminate Databricks Cluster'
   enabled: 'false'

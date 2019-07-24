@@ -22,6 +22,7 @@ class DatabricksCluster:
             self.name = 'aml-cluster-%s' % (suffix)
 
         self.databricks_domain = databricks_domain
+
         self.id = id
 
     def get_base_url(self):
@@ -89,6 +90,11 @@ class DatabricksCluster:
             )
 
     def start(self, databricks_token):
+        if not self.id:
+            raise ClusterManagementException(
+                "The Cluster ID is undefined"
+            )
+
         if self.state is None:
             self.get_state(databricks_token)
 
