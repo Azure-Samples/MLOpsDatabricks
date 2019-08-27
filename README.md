@@ -1,3 +1,15 @@
+---
+page_type: sample
+languages:
+- python
+products:
+- azure
+- azure-machine-learning-service
+- azure-devops
+- databricks
+description: "Code which demonstrates how to set up and operationalize an MLOps flow leveraging Azure Machine Learning with Azure Databricks for training compute and Azure DevOps."
+---
+
 # MLOps with Azure DevOps
 
 [![Build Status](https://dev.azure.com/aidemos/MLOps/_apis/build/status/Azure-Samples.MLOpsDatabricks.BuildTrain?branchName=master)](https://dev.azure.com/aidemos/MLOps/_build/latest?definitionId=101&branchName=master)
