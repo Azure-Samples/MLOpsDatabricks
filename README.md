@@ -6,8 +6,8 @@ products:
 - azure
 - azure-machine-learning-service
 - azure-devops
-- databricks
-description: "Code which demonstrates how to set up and operationalize an MLOps flow leveraging Azure Machine Learning with Azure Databricks for training compute and Azure DevOps."
+- azure-databricks
+description: "Set up and operationalize an MLOps flow leveraging Azure Machine Learning Python SDK, Azure Databricks, and Azure DevOps."
 ---
 
 # MLOps with Azure DevOps
